@@ -1,6 +1,6 @@
-# PDF to EPUB Converter
+# PDF to EPUB AI Converter
 
-A Python toolkit for converting OCR'd PDF text to clean, readable EPUB format using AI-powered text refinement.
+A Python toolkit for converting PDF files to clean, readable EPUB format using AI-powered post-OCR correction and text refinement.
 
 ## Overview
 
@@ -13,13 +13,15 @@ This project provides a complete pipeline for converting PDF files to EPUB forma
 
 ## Features
 
-- **Local OCR cleanup** with regex-based text cleaning
-- **AI-powered refinement** using OpenAI's GPT-4.1 model
-- **Concurrent processing** for faster API calls
-- **Cost tracking** with detailed progress reporting
-- **Chapter detection** and automatic EPUB structuring
-- **Configurable chunking** for optimal API usage
-- **Comprehensive error handling** with retry logic
+- **Smart PDF text extraction** - Direct extraction or OCR fallback
+- **Post-OCR correction** - Local regex cleanup + AI-powered refinement
+- **AI text refinement** - OpenAI GPT-4.1 for spelling, grammar, and OCR error correction
+- **Concurrent processing** - Parallel API calls for faster processing
+- **Real-time cost tracking** - Detailed progress and cost estimation
+- **Automatic chapter detection** - Smart EPUB structuring from headings
+- **Intelligent text chunking** - Paragraph-aware splitting for optimal API usage
+- **Multi-language OCR support** - All Tesseract language packs
+- **Comprehensive error handling** - Retry logic and graceful failure recovery
 
 ## Installation
 
@@ -33,8 +35,22 @@ This project provides a complete pipeline for converting PDF files to EPUB forma
 Install required packages:
 
 ```bash
-pip install openai python-dotenv ebooklib tqdm tiktoken
+# Install from requirements.txt (recommended)
+pip install -r requirements.txt
+
+# Or install individually:
+pip install openai python-dotenv ebooklib tqdm tiktoken PyMuPDF pytesseract pillow pdf2image
 ```
+
+**System Dependencies:**
+- **Tesseract OCR**: Required for OCR functionality
+  - Windows: Download from [GitHub releases](https://github.com/UB-Mannheim/tesseract/wiki)
+  - macOS: `brew install tesseract`
+  - Ubuntu: `sudo apt install tesseract-ocr`
+- **Poppler** (optional): Improves PDF to image conversion
+  - Windows: Download from [poppler releases](https://github.com/oschwartz10612/poppler-windows/releases)
+  - macOS: `brew install poppler`
+  - Ubuntu: `sudo apt install poppler-utils`
 
 ### Setup
 
@@ -176,7 +192,7 @@ The AI refinement tool processes chunks concurrently:
 ## Project Structure
 
 ```
-pdf2epub/
+pdf-to-epub-ai/
 ├── pdf_ocr.py             # PDF text extraction with OCR
 ├── process_ocr.py          # OCR cleanup with regex/heuristics
 ├── openai_cleaner.py       # AI-powered text refinement
