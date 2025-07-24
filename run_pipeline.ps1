@@ -15,6 +15,15 @@ if (Test-Path ".env") {
 $OUTPUT_DIR = if ($env:OUTPUT_DIR) { $env:OUTPUT_DIR } else { "output" }
 $TEMP_DIR = if ($env:TEMP_DIR) { $env:TEMP_DIR } else { "temp" }
 
+# Set default Tesseract path for Windows if not defined
+if (-not $env:TESSERACT_PATH) {
+    if (Test-Path "C:\Program Files\Tesseract-OCR\tesseract.exe") {
+        $env:TESSERACT_PATH = "C:\Program Files\Tesseract-OCR\tesseract.exe"
+    } elseif (Test-Path "C:\Program Files (x86)\Tesseract-OCR\tesseract.exe") {
+        $env:TESSERACT_PATH = "C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
+    }
+}
+
 # Ensure required directories exist
 New-Item -ItemType Directory -Force -Path $OUTPUT_DIR | Out-Null
 New-Item -ItemType Directory -Force -Path $TEMP_DIR | Out-Null
