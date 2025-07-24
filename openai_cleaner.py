@@ -224,7 +224,7 @@ def process_chunk_batch(client, chunk_batch, model):
     return results
 
 
-def process_text(input_file, output_file, model="gpt-4o"):
+def process_text(input_file, output_file, model="gpt-4.1"):
     """
     Process the cleaned text file with OpenAI's API correction using concurrency.
 
@@ -353,7 +353,7 @@ def main():
     
     # Get defaults from environment
     default_output_dir = os.getenv('OUTPUT_DIR', 'output')
-    default_model = os.getenv('AI_MODEL', 'gpt-4o')
+    default_model = os.getenv('AI_MODEL', 'gpt-4.1')
     
     # Set API key if needed (new client will use it from environment)
     api_key = os.getenv("OPENAI_API_KEY")

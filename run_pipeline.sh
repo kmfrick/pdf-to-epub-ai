@@ -22,9 +22,15 @@ python process_ocr.py "$TEMP_DIR/ocr_output.txt" "$TEMP_DIR/cleaned_text.txt"
 echo "Refining text with AI..."
 python openai_cleaner.py "$TEMP_DIR/cleaned_text.txt" "$TEMP_DIR/refined_text.txt"
 
-# Step 4: Convert cleaned text to EPUB
+# Step 4: Copy refined text to output directory
+echo "Copying refined text to output..."
+cp "$TEMP_DIR/refined_text.txt" "$OUTPUT_DIR/final_output.txt"
+
+# Step 5: Convert cleaned text to EPUB
 echo "Converting to EPUB..."
 python convert_to_epub.py "$TEMP_DIR/refined_text.txt" "$OUTPUT_DIR/final_output.epub"
 
 # Completion message
-echo "PDF to EPUB conversion complete! Find your file at: $OUTPUT_DIR/final_output.epub"
+echo "PDF to EPUB conversion complete!"
+echo "Output TXT: $OUTPUT_DIR/final_output.txt"
+echo "Output EPUB: $OUTPUT_DIR/final_output.epub"

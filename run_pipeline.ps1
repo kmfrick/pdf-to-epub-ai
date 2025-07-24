@@ -66,10 +66,19 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Step 4: Convert cleaned text to EPUB
-Write-Host "Step 4: Converting to EPUB..." -ForegroundColor Green
-$outputFile = "$OUTPUT_DIR/$(Split-Path $inputPdf -LeafBase).epub"
-python convert_to_epub.py "$TEMP_DIR/refined_text.txt" $outputFile
+# Step 4: Copy refined text to output directory
+Write-Host "Step 4: Copying refined text to output..." -ForegroundColor Green
+$outputTxt = "$OUTPUT_DIR/$(Split-Path $inputPdf -LeafBase).txt"
+Copy-Item "$TEMP_DIR/refined_text.txt" $outputTxt
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Error: Failed to copy refined text!" -ForegroundColor Red
+    exit 1
+}
+
+# Step 5: Convert cleaned text to EPUB
+Write-Host "Step 5: Converting to EPUB..." -ForegroundColor Green
+$outputEpub = "$OUTPUT_DIR/$(Split-Path $inputPdf -LeafBase).epub"
+python convert_to_epub.py "$TEMP_DIR/refined_text.txt" $outputEpub
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: EPUB conversion failed!" -ForegroundColor Red
     exit 1
@@ -77,7 +86,8 @@ if ($LASTEXITCODE -ne 0) {
 
 # Completion message
 Write-Host "PDF to EPUB conversion complete!" -ForegroundColor Green
-Write-Host "Output file: $outputFile" -ForegroundColor Cyan
+Write-Host "Output TXT: $outputTxt" -ForegroundColor Cyan
+Write-Host "Output EPUB: $outputEpub" -ForegroundColor Cyan
 
 # Optional cleanup
 $cleanup = Read-Host "Delete temporary files? (y/N)"

@@ -62,22 +62,48 @@ pip install openai python-dotenv ebooklib tqdm tiktoken PyMuPDF pytesseract pill
 
 ## Usage
 
-### Complete Pipeline
+### Automated Pipeline Scripts
 
-For a typical workflow processing a PDF file called `document.pdf`:
+**Windows Users:** Use the provided batch files for automated processing:
+
+```batch
+# Full pipeline with AI refinement
+run_pipeline.bat document.pdf
+
+# Test pipeline without AI (faster, free)
+test_pdf_pipeline.bat document.pdf
+```
+
+**PowerShell Users:**
+
+```powershell
+# Full pipeline with AI refinement
+.\run_pipeline.ps1 document.pdf
+```
+
+**Linux/macOS Users:**
 
 ```bash
-# Step 0: Extract text from PDF (OCR if needed)
-python pdf_ocr.py --in document.pdf --out document.txt
+# Full pipeline with AI refinement
+./run_pipeline.sh document.pdf
+```
 
-# Step 1: Clean OCR text
-python process_ocr.py --in document.txt --out output/document_clean.txt
+### Manual Step-by-Step Process
 
-# Step 2: AI refinement (costs money!)
-python openai_cleaner.py --in output/document_clean.txt --out output/document_final.txt --model gpt-4.1
+For manual control or debugging, process each step individually:
 
-# Step 3: Convert to EPUB
-python convert_to_epub.py --in output/document_final.txt --out output/document.epub
+```bash
+# Step 1: Extract text from PDF (OCR if needed)
+python pdf_ocr.py --in document.pdf --out temp/document_ocr.txt
+
+# Step 2: Clean OCR text
+python process_ocr.py --in temp/document_ocr.txt --out temp/document_clean.txt
+
+# Step 3: AI refinement (costs money!)
+python openai_cleaner.py --in temp/document_clean.txt --out temp/document_refined.txt --model gpt-4.1
+
+# Step 4: Convert to EPUB
+python convert_to_epub.py --in temp/document_refined.txt --out output/document.epub
 ```
 
 ### Individual Tools
@@ -197,11 +223,15 @@ pdf-to-epub-ai/
 ├── process_ocr.py          # OCR cleanup with regex/heuristics
 ├── openai_cleaner.py       # AI-powered text refinement
 ├── convert_to_epub.py      # EPUB generation
-├── test_api.py            # API connectivity test
-├── test_chunks.py         # Chunking logic test
-├── test_subset.py         # Small subset processing test
+├── run_pipeline.bat        # Windows batch script for full pipeline
+├── run_pipeline.ps1        # PowerShell script for full pipeline
+├── run_pipeline.sh         # Linux/macOS bash script for full pipeline
+├── test_pdf_pipeline.bat   # Windows test pipeline (no AI)
+├── sample_ocr_text.txt     # Sample OCR text for testing
+├── .env.example           # Environment variables template
 ├── requirements.txt       # Python dependencies
 ├── output/                # Output directory for processed files
+├── temp/                  # Temporary files directory
 ├── .env                   # Environment variables (API keys)
 ├── .gitignore            # Git ignore patterns
 ├── LICENSE               # MIT License

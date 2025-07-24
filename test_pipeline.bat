@@ -36,9 +36,18 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Step 2: Convert to EPUB (skip AI refinement for demo)
+REM Step 2: Copy cleaned text to output directory
 echo.
-echo [STEP 2/2] Converting to EPUB...
+echo [STEP 2/3] Copying cleaned text to output...
+copy "%TEMP_DIR%\%BASENAME%_clean.txt" "%OUTPUT_DIR%\%BASENAME%.txt"
+if errorlevel 1 (
+    echo ERROR: Failed to copy cleaned text!
+    exit /b 1
+)
+
+REM Step 3: Convert to EPUB (skip AI refinement for demo)
+echo.
+echo [STEP 3/3] Converting to EPUB...
 python convert_to_epub.py --in "%TEMP_DIR%\%BASENAME%_clean.txt" --out "%OUTPUT_DIR%\%BASENAME%.epub"
 if errorlevel 1 (
     echo ERROR: EPUB conversion failed!
@@ -49,6 +58,7 @@ echo.
 echo ========================================
 echo CONVERSION COMPLETED SUCCESSFULLY!
 echo ========================================
+echo Output TXT: %OUTPUT_DIR%\%BASENAME%.txt
 echo Output EPUB: %OUTPUT_DIR%\%BASENAME%.epub
 echo.
 
