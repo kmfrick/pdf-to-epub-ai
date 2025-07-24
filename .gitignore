@@ -73,11 +73,14 @@ Thumbs.db
 
 # Project specific
 *.pdf
-*.txt
 *.epub
 output/
 temp/
 backup/
+
+# Exclude text files but allow requirements.txt
+*.txt
+!requirements.txt
 
 # Logs
 *.log
