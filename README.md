@@ -255,6 +255,14 @@ The AI refinement tool provides detailed cost tracking:
 
 This is a specialized tool for PDF to EPUB conversion. Feel free to fork and adapt for your specific needs.
 
+### Development Tools
+
+This project was developed with:
+- **[Warp Terminal](https://www.warp.dev/)** - AI-powered terminal for enhanced development workflow
+- **[Claude 4 Sonnet](https://claude.ai/)** - AI assistant for code generation, documentation, and architectural guidance
+
+Contributions, bug reports, and feature requests are welcome!
+
 ## License
 
 MIT License - see LICENSE file for details.
