@@ -5,9 +5,11 @@ Uses EbookLib to generate an EPUB file from text
 """
 
 import argparse
+import os
 from pathlib import Path
 from ebooklib import epub
 import html
+from dotenv import load_dotenv
 
 
 def parse_chapters(file_path):
@@ -156,6 +158,11 @@ def create_epub(book_id, title, author, chapters, output_path):
 
 def main():
     """Main entry point with CLI argument parsing"""
+    load_dotenv()
+    
+    # Get defaults from environment
+    default_output_dir = os.getenv('OUTPUT_DIR', 'output')
+    
     parser = argparse.ArgumentParser(
         description='Convert text to EPUB format'
     )
@@ -163,15 +170,15 @@ def main():
         '--in',
         dest='input',
         type=str,
-        default='output/innerspace_final.txt',
-        help='Input file path (default: output/innerspace_final.txt)'
+        default=f'{default_output_dir}/innerspace_final.txt',
+        help=f'Input file path (default: {default_output_dir}/innerspace_final.txt)'
     )
     parser.add_argument(
         '--out',
         dest='output',
         type=str,
-        default='output/innerspace.epub',
-        help='Output file path (default: output/innerspace.epub)'
+        default=f'{default_output_dir}/innerspace.epub',
+        help=f'Output file path (default: {default_output_dir}/innerspace.epub)'
     )
 
     args = parser.parse_args()
@@ -189,6 +196,9 @@ def main():
 
     chapters = parse_chapters(input_file)
     print(f"Parsed {len(chapters)} chapters")
+
+    # Ensure output directory exists
+    output_file.parent.mkdir(parents=True, exist_ok=True)
 
     create_epub(
         book_id="innerspace",

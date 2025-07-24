@@ -10,6 +10,7 @@ from pathlib import Path
 import tempfile
 import subprocess
 import sys
+from dotenv import load_dotenv
 
 try:
     import fitz  # PyMuPDF
@@ -267,6 +268,17 @@ def detect_tesseract_languages():
 
 def main():
     """Main entry point with CLI argument handling."""
+    load_dotenv()
+    
+    # Get defaults from environment
+    default_temp_dir = os.getenv('TEMP_DIR', 'temp')
+    default_tesseract_lang = os.getenv('TESSERACT_LANG', 'eng')
+    tesseract_path = os.getenv('TESSERACT_PATH')
+    
+    # Set tesseract path if provided
+    if tesseract_path and TESSERACT_AVAILABLE:
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+    
     parser = argparse.ArgumentParser(
         description='Extract text from PDF files using OCR when necessary'
     )
@@ -286,8 +298,8 @@ def main():
     parser.add_argument(
         '--language',
         type=str,
-        default='eng',
-        help='Tesseract language code (default: eng). Use --list-languages to see available languages'
+        default=default_tesseract_lang,
+        help=f'Tesseract language code (default: {default_tesseract_lang}). Use --list-languages to see available languages'
     )
     parser.add_argument(
         '--force-ocr',

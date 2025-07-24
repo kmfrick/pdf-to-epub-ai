@@ -71,6 +71,9 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Exclude potential copyrighted content
+!sample_ocr_text.txt
+
 # Project specific
 *.pdf
 *.epub

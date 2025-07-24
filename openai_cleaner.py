@@ -224,7 +224,7 @@ def process_chunk_batch(client, chunk_batch, model):
     return results
 
 
-def process_text(input_file, output_file, model="gpt-4.1"):
+def process_text(input_file, output_file, model="gpt-4o"):
     """
     Process the cleaned text file with OpenAI's API correction using concurrency.
 
@@ -238,6 +238,11 @@ def process_text(input_file, output_file, model="gpt-4.1"):
     total_input_tokens = 0
     total_output_tokens = 0
     
+    # Get configuration from environment
+    max_tokens_per_chunk = int(os.getenv('MAX_TOKENS_PER_CHUNK', '3000'))
+    max_cost_limit = float(os.getenv('MAX_COST_LIMIT', '10.00'))
+    track_usage = os.getenv('TRACK_USAGE', 'true').lower() == 'true'
+    
     # Read input file
     print(f"Reading {input_file}...")
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -247,9 +252,20 @@ def process_text(input_file, output_file, model="gpt-4.1"):
     total_tokens = count_tokens(text, model)
     print(f"Estimated input tokens: {total_tokens:,}")
     
+    # Estimate total cost before processing
+    if track_usage:
+        estimated_cost = calculate_cost(total_tokens, total_tokens * 0.5, model)  # Rough estimate
+        print(f"Estimated cost: ${estimated_cost:.4f}")
+        if estimated_cost > max_cost_limit:
+            print(f"WARNING: Estimated cost (${estimated_cost:.4f}) exceeds limit (${max_cost_limit:.2f})")
+            response = input("Continue? (y/N): ")
+            if response.lower() != 'y':
+                print("Processing cancelled.")
+                return
+    
     # Split into larger chunks for better context
     print("\nSplitting text into chunks...")
-    chunks = split_text_into_chunks(text, max_tokens=2500, model=model)
+    chunks = split_text_into_chunks(text, max_tokens=max_tokens_per_chunk, model=model)
     print(f"Created {len(chunks)} chunks")
     
     # Show chunk size distribution
@@ -335,6 +351,10 @@ def main():
     """Main entry point with CLI argument handling."""
     load_dotenv()
     
+    # Get defaults from environment
+    default_output_dir = os.getenv('OUTPUT_DIR', 'output')
+    default_model = os.getenv('AI_MODEL', 'gpt-4o')
+    
     # Set API key if needed (new client will use it from environment)
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
@@ -343,27 +363,27 @@ def main():
         exit(1)
 
     parser = argparse.ArgumentParser(
-        description='Refine cleaned OCR text using OpenAI GPT-4.1'
+        description='Refine cleaned OCR text using OpenAI GPT'
     )
     parser.add_argument(
         '--in', 
         dest='input',
         type=str,
-        default='output/innerspace_clean.txt',
-        help='Input file path (default: output/innerspace_clean.txt)'
+        default=f'{default_output_dir}/innerspace_clean.txt',
+        help=f'Input file path (default: {default_output_dir}/innerspace_clean.txt)'
     )
     parser.add_argument(
         '--out',
         dest='output',
         type=str,
-        default='output/innerspace_final.txt',
-        help='Output file path (default: output/innerspace_final.txt)'
+        default=f'{default_output_dir}/innerspace_final.txt',
+        help=f'Output file path (default: {default_output_dir}/innerspace_final.txt)'
     )
     parser.add_argument(
         '--model',
         type=str,
-        default='gpt-4.1',
-        help='OpenAI model to use (default: gpt-4.1)'
+        default=default_model,
+        help=f'OpenAI model to use (default: {default_model})'
     )
 
     args = parser.parse_args()

@@ -5,8 +5,10 @@ Reads OCR output text and applies various cleaning operations to improve readabi
 """
 
 import argparse
+import os
 import re
 from pathlib import Path
+from dotenv import load_dotenv
 
 
 def detect_paragraph_boundaries(text):
@@ -343,6 +345,11 @@ def process_file(input_path, output_path):
 
 def main():
     """Main entry point with CLI argument handling."""
+    load_dotenv()
+    
+    # Get defaults from environment
+    default_output_dir = os.getenv('OUTPUT_DIR', 'output')
+    
     parser = argparse.ArgumentParser(
         description='Clean OCR text using regex and heuristics'
     )
@@ -357,8 +364,8 @@ def main():
         '--out',
         dest='output',
         type=str,
-        default='output/innerspace_clean.txt',
-        help='Output file path (default: output/innerspace_clean.txt)'
+        default=f'{default_output_dir}/innerspace_clean.txt',
+        help=f'Output file path (default: {default_output_dir}/innerspace_clean.txt)'
     )
     
     args = parser.parse_args()
