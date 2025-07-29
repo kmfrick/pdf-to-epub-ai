@@ -1,4 +1,4 @@
-# PDF to EPUB AI Converter
+# PDF to EPUB AI Converter Scripts
 
 A Python toolkit for converting PDF files to clean, readable EPUB format using AI-powered post-OCR correction and text refinement.
 
